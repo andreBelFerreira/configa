@@ -17,7 +17,7 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active col-12">
-                    <a class="nav-link text-light text-center" href="#"><b>Biblioteca de livros</b></a>
+                    <a class="nav-link text-light text-center" href="<?php echo base_url('home') ?>"><b>Biblioteca de livros</b></a>
                 </li>
             </ul>
         </div>
