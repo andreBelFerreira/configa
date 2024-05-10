@@ -53,7 +53,7 @@
 
         .textArea {
             width: 16em;
-            height: 15em;
+            height: 12em;
             text-align: justify;
         }
     </style>
@@ -126,6 +126,8 @@
                                             <h5 class="card-title text"><?= mb_strtoupper($linha->TITULO) ?></h5>
                                             <p class="card-text"><?= $linha->AUTOR ?></p>
                                             <p class="card-text textArea"><?= $linha->DESCRICAO  ?></p>
+                                            <a class="card-link btn btn-primary m-1" onclick="">Editar</a>
+                                            <a class="card-link btn btn-danger m-1" onclick="deleteLivro(<?= $linha->ID ?>)">Deletar</a>
                                         </div>
                                     </div>
                                 </div>
@@ -148,6 +150,44 @@
                 type: "POST",
                 dataType: "json",
                 data: $('#formCadLivro').serialize(),
+                success: function(data) {
+                    if (data == true) {
+                        window.location.reload(true);
+                    } else {
+                        swal({
+                            title: "Atenção!",
+                            text: "Não foi possivel cadastrar o livro.",
+                            type: "error"
+                        });
+                    }
+
+                },
+                beforeSend: function() {
+                    swal({
+                        title: "Aguarde!",
+                        text: "Carregando...",
+                        imageUrl: base_url + "assets/img/loading.gif",
+                        showConfirmButton: false
+                    });
+                },
+                error: function(data_error) {
+                    swal({
+                        title: "Atenção!",
+                        text: "Erro ao tentar cadastrar no livro.",
+                        type: "error"
+                    });
+                }
+            });
+        }
+
+        function deleteLivro(id) {
+            $.ajax({
+                url: base_url + "/home/deleteLivro",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    'id': id
+                },
                 success: function(data) {
                     if (data == true) {
                         window.location.reload(true);

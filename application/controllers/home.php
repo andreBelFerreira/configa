@@ -16,4 +16,11 @@ class home extends CI_Controller
         $retorno = $this->m_insert->cadastroLivro();
         echo $retorno;
     }
+
+    public function deleteLivro()
+    {
+        $this->load->model('m_delete');
+        $retorno = $this->m_delete->deleteLivro();
+        echo $retorno;
+    }
 }
