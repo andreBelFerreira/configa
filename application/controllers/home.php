@@ -9,4 +9,8 @@ class home extends CI_Controller
         $retorno['livros'] = $this->m_retorno->retornoLivro();
         $this->load->view('v_home', $retorno);
     }
+
+    public function cadastroLivro()
+    {
+    }
 }
