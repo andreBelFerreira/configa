@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class m_retorno extends CI_Controller
+class m_delete extends CI_Model
 {
    
 }

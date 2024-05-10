@@ -25,14 +25,15 @@
     <div class="container-fluid">
         <?php
         foreach ($livros as $linha) {
+
         ?>
 
             <div class="card" style="width: 18rem;">
-                <img src="<?= base_url($linha->url) ?>" class="card-img-top">
+                <img src="<?= base_url($linha->URL) ?>" class="card-img-top">
                 <div class="card-body">
-                    <h5 class="card-title"><?= $linha->titulo ?></h5>
-                    <p class="card-text"><?= $linha->autor  ?></p>
-                    <p class="card-text"><?= $linha->descricao  ?></p>
+                    <h5 class="card-title"><?= $linha->TITULO ?></h5>
+                    <p class="card-text"><?= $linha->AUTOR ?></p>
+                    <p class="card-text"><?= $linha->DESCRICAO  ?></p>
                 </div>
             </div>
 
