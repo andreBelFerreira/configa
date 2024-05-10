@@ -22,7 +22,22 @@
             </ul>
         </div>
     </nav>
+    <div class="container-fluid">
+        <?php
+        foreach ($livros as $linha) {
+        ?>
 
+            <div class="card" style="width: 18rem;">
+                <img src="<?= base_url($linha->url) ?>" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title"><?= $linha->titulo ?></h5>
+                    <p class="card-text"><?= $linha->autor  ?></p>
+                    <p class="card-text"><?= $linha->descricao  ?></p>
+                </div>
+            </div>
+
+        <?php } ?>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 
