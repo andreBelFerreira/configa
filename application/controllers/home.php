@@ -12,5 +12,8 @@ class home extends CI_Controller
 
     public function cadastroLivro()
     {
+        $this->load->model('m_insert');
+        $retorno = $this->m_insert->cadastroLivro();
+        echo $retorno;
     }
 }

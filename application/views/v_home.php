@@ -43,6 +43,19 @@
             text-align: right;
 
         }
+
+        .text {
+            white-space: nowrap;
+            width: 13em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .textArea {
+            width: 16em;
+            height: 15em;
+            text-align: justify;
+        }
     </style>
 
     <title>Ondacom</title>
@@ -83,7 +96,7 @@
                             </div>
                             <div class="mb-3">
                                 <center><label for="txtDescricao" class="form-label">DESCRIÇÃO</label></center>
-                                <textarea id="txtDescricao" id="txtDescricao" class="form-control"></textarea>
+                                <textarea id="txtDescricao" name="txtDescricao" class="form-control"></textarea>
                             </div>
                             <div class="mb-3">
                                 <center><label for="txtURL" class="form-label">URL da imagem</label></center>
@@ -107,12 +120,12 @@
                             foreach ($livros as $linha) {
                             ?>
                                 <div class="col-3">
-                                    <div class="card">
+                                    <div class="card" height="300px">
                                         <img src="<?= $linha->URL ?>" class="card-img-top" height="300px">
                                         <div class="card-body">
-                                            <h5 class="card-title"><?= mb_strtoupper($linha->TITULO) ?></h5>
+                                            <h5 class="card-title text"><?= mb_strtoupper($linha->TITULO) ?></h5>
                                             <p class="card-text"><?= $linha->AUTOR ?></p>
-                                            <p class="card-text"><?= $linha->DESCRICAO  ?></p>
+                                            <p class="card-text textArea"><?= $linha->DESCRICAO  ?></p>
                                         </div>
                                     </div>
                                 </div>
@@ -136,17 +149,32 @@
                 dataType: "json",
                 data: $('#formCadLivro').serialize(),
                 success: function(data) {
+                    if (data == true) {
+                        window.location.reload(true);
+                    } else {
+                        swal({
+                            title: "Atenção!",
+                            text: "Não foi possivel cadastrar o livro.",
+                            type: "error"
+                        });
+                    }
 
                 },
                 beforeSend: function() {
                     swal({
                         title: "Aguarde!",
                         text: "Carregando...",
-                        imageUrl: base_url + "assets/img/gifs/loading-red.gif",
+                        imageUrl: base_url + "assets/img/loading.gif",
                         showConfirmButton: false
                     });
                 },
-                error: function(data_error) {}
+                error: function(data_error) {
+                    swal({
+                        title: "Atenção!",
+                        text: "Erro ao tentar cadastrar no livro.",
+                        type: "error"
+                    });
+                }
             });
         }
     </script>
