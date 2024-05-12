@@ -11,7 +11,8 @@ class m_insert extends CI_Model
             'TITULO' => $param['txtTitulo'],
             'DESCRICAO' => $param['txtDescricao'],
             'AUTOR' => $param['txtAutor'],
-            'URL' => $param['txtURL']
+            'URL' => $param['txtURL'],
+            'FAVORITO' => ''
         );
 
         $retorno = $this->db->insert('livros', $data);

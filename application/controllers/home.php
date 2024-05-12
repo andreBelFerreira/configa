@@ -23,4 +23,11 @@ class home extends CI_Controller
         $retorno = $this->m_delete->deleteLivro();
         echo $retorno;
     }
+
+    public function favorito()
+    {
+        $this->load->model('m_update');
+        $retorno = $this->m_update->favorito();
+        echo $retorno;
+    }
 }

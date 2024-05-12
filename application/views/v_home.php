@@ -126,7 +126,17 @@
                                             <h5 class="card-title text"><?= mb_strtoupper($linha->TITULO) ?></h5>
                                             <p class="card-text"><?= $linha->AUTOR ?></p>
                                             <p class="card-text textArea"><?= $linha->DESCRICAO  ?></p>
-                                            <a class="card-link btn btn-primary m-1" onclick="">Editar</a>
+                                            <?php
+                                            if ($linha->FAVORITO == 'F') { ?>
+                                                <a class="card-link btn btn-danger m-1" onclick="favorito(<?= $linha->ID ?>)"><i class="fa-solid fa-heart"></i></a>
+                                            <?php
+                                            } else {
+                                            ?>
+                                                <a class="card-link btn btn-danger m-1" onclick="favorito(<?= $linha->ID ?>)"><i class="fa-regular fa-heart"></i></a>
+                                            <?php
+                                            }
+                                            ?>
+
                                             <a class="card-link btn btn-danger m-1" onclick="deleteLivro(<?= $linha->ID ?>)">Deletar</a>
                                         </div>
                                     </div>
@@ -183,6 +193,44 @@
         function deleteLivro(id) {
             $.ajax({
                 url: base_url + "/home/deleteLivro",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    'id': id
+                },
+                success: function(data) {
+                    if (data == true) {
+                        window.location.reload(true);
+                    } else {
+                        swal({
+                            title: "Atenção!",
+                            text: "Não foi possivel cadastrar o livro.",
+                            type: "error"
+                        });
+                    }
+
+                },
+                beforeSend: function() {
+                    swal({
+                        title: "Aguarde!",
+                        text: "Carregando...",
+                        imageUrl: base_url + "assets/img/loading.gif",
+                        showConfirmButton: false
+                    });
+                },
+                error: function(data_error) {
+                    swal({
+                        title: "Atenção!",
+                        text: "Erro ao tentar cadastrar no livro.",
+                        type: "error"
+                    });
+                }
+            });
+        }
+
+        function favorito(id) {
+            $.ajax({
+                url: base_url + "/home/favorito",
                 type: "POST",
                 dataType: "json",
                 data: {
