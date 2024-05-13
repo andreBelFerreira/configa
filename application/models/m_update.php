@@ -10,9 +10,9 @@ class m_update extends CI_Model
         $ID = $param['id'];
 
         $this->db->where('id', $ID);
-        $query = $this->db->get('livros');
+        $query = $this->db->get('livros')->result();
 
-        if ($query[0]['FAVORITO'] !== 'F') {
+        if ($query[0]->FAVORITO !== 'F') {
             $data = array(
                 'FAVORITO' => 'F'
             );
@@ -23,7 +23,7 @@ class m_update extends CI_Model
         }
 
         $this->db->where('id', $ID);
-        $retorno = $this->db->update('mytable', $data);
+        $retorno = $this->db->update('livros', $data);
 
         return $retorno;
     }

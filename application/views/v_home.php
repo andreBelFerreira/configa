@@ -11,6 +11,7 @@
     <script src="<?= base_url() ?>assets/js/jquery-3.4.1.min.js"></script>
     <script src="<?= base_url() ?>assets/js/popper.min.js"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/alerta/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script type="text/javascript" src="<?= base_url() ?>assets/moment-develop/moment.js"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/moment-develop/locale/pt-br.js"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/js/tableExport.min.js"></script>
@@ -113,37 +114,18 @@
         </div>
         <div class="container">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body pt-0">
                     <div class="col-12">
-                        <div class="row">
-                            <?php
-                            foreach ($livros as $linha) {
-                            ?>
-                                <div class="col-3">
-                                    <div class="card" height="300px">
-                                        <img src="<?= $linha->URL ?>" class="card-img-top" height="300px">
-                                        <div class="card-body">
-                                            <h5 class="card-title text"><?= mb_strtoupper($linha->TITULO) ?></h5>
-                                            <p class="card-text"><?= $linha->AUTOR ?></p>
-                                            <p class="card-text textArea"><?= $linha->DESCRICAO  ?></p>
-                                            <?php
-                                            if ($linha->FAVORITO == 'F') { ?>
-                                                <a class="card-link btn btn-danger m-1" onclick="favorito(<?= $linha->ID ?>)"><i class="fa-solid fa-heart"></i></a>
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <a class="card-link btn btn-danger m-1" onclick="favorito(<?= $linha->ID ?>)"><i class="fa-regular fa-heart"></i></a>
-                                            <?php
-                                            }
-                                            ?>
+                        <div class="row " id="divLivros">
 
-                                            <a class="card-link btn btn-danger m-1" onclick="deleteLivro(<?= $linha->ID ?>)">Deletar</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php } ?>
                         </div>
                         <div class="col-lg-12" id="btnCadastro">
+                            <button type="button" class="btn btn-warning" onclick="retFavorito()" id="btnFavorito">
+                                FAVORITO
+                            </button>
+                            <button type="button" class="btn btn-warning d-none" onclick="retornoLivro()" id="btnTodos">
+                                TODOS
+                            </button>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCadLivros">
                                 ADICIONAR
                             </button>
@@ -162,7 +144,8 @@
                 data: $('#formCadLivro').serialize(),
                 success: function(data) {
                     if (data == true) {
-                        window.location.reload(true);
+                        retornoLivro()
+                        limpar()
                     } else {
                         swal({
                             title: "Atenção!",
@@ -200,7 +183,7 @@
                 },
                 success: function(data) {
                     if (data == true) {
-                        window.location.reload(true);
+                        retornoLivro()
                     } else {
                         swal({
                             title: "Atenção!",
@@ -238,7 +221,7 @@
                 },
                 success: function(data) {
                     if (data == true) {
-                        window.location.reload(true);
+                        retornoLivro()
                     } else {
                         swal({
                             title: "Atenção!",
@@ -265,6 +248,113 @@
                 }
             });
         }
+
+        $(document).ready(function() {
+            retornoLivro()
+        })
+
+        function retornoLivro() {
+            var variavel = ''
+            $.ajax({
+                url: base_url + "/home/retornoLivro",
+                type: "POST",
+                dataType: "json",
+                success: function(data) {
+                    swal({
+                        timer: 1,
+                        title: "Aguarde!",
+                        text: "Carregando...",
+                        imageUrl: base_url + "assets/img/loading.gif",
+                        showConfirmButton: false
+                    });
+                    $('#divLivros').html('');
+                    var json = JSON.stringify(data);
+                    $.each(JSON.parse(json), function(idx, obj) {
+                        variavel += '<div class="col-3 mt-3"><div class="card" height="300px"><img src="' + obj.URL + '" class="card-img-top" height="300px"><div class="card-body"><h5 class="card-title text">' + obj.TITULO + '</h5> <p class="card-text" > ' + obj.AUTOR + '</p><p class="card-text textArea">' + obj.DESCRICAO + '</p>';
+                        if (obj.FAVORITO == '') {
+                            variavel += '<a class="card-link btn btn-outline-warning m-1" onclick="favorito(' + obj.ID + ')"><i class="fa-regular fa-heart"></i></a>';
+                        } else {
+                            variavel += '<a class="card-link btn btn-warning m-1" onclick="favorito(' + obj.ID + ')"><i class="fa-regular fa-heart"></i></a>';
+                        }
+                        variavel += '<a class="card-link btn btn-danger m-1" onclick="deleteLivro(' + obj.ID + ')">Deletar</a></div></div></div></div>';
+                    });
+                    $('#divLivros').append(variavel)
+                    $('#btnFavorito').removeClass('d-none');
+                    $('#btnTodos').addClass('d-none');
+                },
+                beforeSend: function() {
+                    swal({
+                        title: "Aguarde!",
+                        text: "Carregando...",
+                        imageUrl: base_url + "assets/img/loading.gif",
+                        showConfirmButton: false
+                    });
+                },
+                error: function(data_error) {
+                    swal({
+                        title: "Atenção!",
+                        text: "Erro ao tentar cadastrar no livro.",
+                        type: "error"
+                    });
+                }
+            });
+        }
+
+        function retFavorito() {
+            var variavel = '';
+            $.ajax({
+                url: base_url + "/home/retFavorito",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    'favorito': 'F'
+                },
+                success: function(data) {
+                    swal({
+                        timer: 1,
+                        title: "Aguarde!",
+                        text: "Carregando...",
+                        imageUrl: base_url + "assets/img/loading.gif",
+                        showConfirmButton: false
+                    });
+                    $('#divLivros').html('');
+                    var json = JSON.stringify(data);
+                    $.each(JSON.parse(json), function(idx, obj) {
+                        variavel += '<div class="col-3 mt-3"><div class="card" height="300px"><img src="' + obj.URL + '" class="card-img-top" height="300px"><div class="card-body"><h5 class="card-title text">' + obj.TITULO + '</h5> <p class="card-text" > ' + obj.AUTOR + '</p><p class="card-text textArea">' + obj.DESCRICAO + '</p>';
+                        if (obj.FAVORITO == '') {
+                            variavel += '<a class="card-link btn btn-outline-warning m-1" onclick="favorito(' + obj.ID + ')"><i class="fa-regular fa-heart"></i></a>';
+                        } else {
+                            variavel += '<a class="card-link btn btn-warning m-1" onclick="favorito(' + obj.ID + ')"><i class="fa-regular fa-heart"></i></a>';
+                        }
+                        variavel += '<a class="card-link btn btn-danger m-1" onclick="deleteLivro(' + obj.ID + ')">Deletar</a></div></div></div></div>';
+                    });
+
+                    $('#divLivros').append(variavel)
+                    $('#btnFavorito').addClass('d-none');
+                    $('#btnTodos').removeClass('d-none');
+                },
+                beforeSend: function() {
+                    swal({
+                        title: "Aguarde!",
+                        text: "Carregando...",
+                        imageUrl: base_url + "assets/img/loading.gif",
+                        showConfirmButton: false
+                    });
+                },
+                error: function(data_error) {
+                    swal({
+                        title: "Atenção!",
+                        text: "Erro ao tentar cadastrar no livro.",
+                        type: "error"
+                    });
+                }
+            });
+        }
+
+        function limpar() {
+            $("#txtTitulo, #txtAutor, #txtDescricao, #txtURL").val('');
+            $("#modalCadLivros").modal('hide')
+        }
     </script>
 
 
@@ -273,6 +363,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/jasny/js/jasny-bootstrap.min.js"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/js/button-checkbox.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" integrity="sha512-u3fPA7V8qQmhBPNT5quvaXVa1mnnLSXUep5PS1qo5NRzHwG19aHmNJnj1Q8hpA/nBWZtZD4r4AX6YOt5ynLN2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 </html>
